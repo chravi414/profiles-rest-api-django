@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
 
 from profiles_api import serializers
 
@@ -43,3 +44,47 @@ class HelloApiView(APIView):
 	def delete(self, request, pk=None):
 		"""Delete an object"""
 		return Response({'method': 'DELETE'})
+
+
+
+class HelloViewSet(viewsets.ViewSet):
+	"""Test API view set"""
+
+	serializer_class= serializers.HelloSerializer
+
+	def list(sefl, request):
+		"""Return a hello message"""
+
+		view_set_feature = [
+			'User actions (list, create, retrive, update, partial updates)',
+			'Automatically maps urls using routers',
+			'Provides more functionality using less code'
+		]
+
+		return Response({'message': 'hello', 'list': view_set_feature}) 
+
+	def create(self, request):
+		"""Creates a new hello message"""
+		serializer = self.serializer_class(data=request.data)
+		if serializer.is_valid():
+			name = serializer.validated_data.get('name')
+			message = f'Hello {name}'
+			return Response({'message': message})
+		return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
+
+
+	def retrieve(self, request, pk=None):
+		"""Retrieves the particaular object"""
+		return Response({'method': 'Retrieve/GET'})
+
+	def update(self, request, pk=None):
+		"""Updates the particluar object"""
+		return Response({'method': 'Update/PUT'})
+
+	def partial_update(self, request, pk=None):
+		"""Updates the particluar object"""
+		return Response({'method': 'Partial Update/PATCH'})
+
+	def destroy(self, request, pk=None):
+		"""Deletes the particluar object"""
+		return Response({'method': 'Destroy/DELETE'})
